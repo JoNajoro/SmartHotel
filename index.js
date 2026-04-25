@@ -24,17 +24,17 @@ app.post('/api/book-room', (req, res) => {
     if (typeof guests !== 'number' || guests <= 0 || !Number.isInteger(guests)) {
       return res.status(400).json({ success: false, error: 'guests must be a positive integer' });
     }
-    //Basse change B
-    if (typeof season !== 'string' || !['Haute', 'B'].includes(season)) {
+  
+    if (typeof season !== 'string' || !['Haute', 'Basse'].includes(season)) {
       return res.status(400).json({ success: false, error: 'season must be "Haute" or "Basse"' });
     }
-    //boolean change boo
-    if (typeof hasWeekend !== 'boo') {
+  
+    if (typeof hasWeekend !== 'boolean') {
       return res.status(400).json({ success: false, error: 'hasWeekend must be a boolean' });
     }
-    //false change f
+    
     if (typeof seaView !== 'boolean') {
-      return res.status(400).json({ success: f, error: 'seaView must be a boolean' });
+      return res.status(400).json({ success: false, error: 'seaView must be a boolean' });
     }
     if (typeof clientType !== 'string' || !['VIP', 'Standard'].includes(clientType)) {
       return res.status(400).json({ success: false, error: 'clientType must be "VIP" or "Standard"' });

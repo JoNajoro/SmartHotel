@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHotel - Réservation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .breakdown {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .breakdown p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SmartHotel - Calculateur de Prix</h1>
+        <form id="bookingForm">
+            <div class="form-group">
+                <label for="basePrice">Prix de base par nuit (€):</label>
+                <input type="number" id="basePrice" name="basePrice" min="0" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="nights">Nombre de nuits:</label>
+                <input type="number" id="nights" name="nights" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="guests">Nombre d'invités:</label>
+                <input type="number" id="guests" name="guests" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="season">Saison:</label>
+                <select id="season" name="season" required>
+                    <option value="Basse">Basse</option>
+                    <option value="Haute">Haute</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="hasWeekend" name="hasWeekend">
+                    <label for="hasWeekend">Inclut un week-end</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="seaView" name="seaView">
+                    <label for="seaView">Vue sur mer</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="clientType">Type de client:</label>
+                <select id="clientType" name="clientType" required>
+                    <option value="Standard">Standard</option>
+                    <option value="VIP">VIP</option>
+                </select>
+            </div>
+            <button type="submit">Calculer le prix</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const data = {
+                basePrice: parseFloat(formData.get('basePrice')),
+                nights: parseInt(formData.get('nights')),
+                guests: parseInt(formData.get('guests')),
+                season: formData.get('season'),
+                hasWeekend: formData.has('hasWeekend'),
+                seaView: formData.has('seaView'),
+                clientType: formData.get('clientType')
+            };
+
+            try {
+                const response = await fetch('/api/book-room', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                displayResult(result);
+            } catch (error) {
+                displayResult({ success: false, error: 'Erreur de connexion au serveur' });
+            }
+        });
+
+        function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+
+            if (result.success) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = `
+                    <h3>Prix total: ${result.grandTotal} €</h3>
+                    <div class="breakdown">
+                        <p>Prix de base: ${result.breakdown.baseTotal} €</p>
+                        <p>Après week-end: ${result.breakdown.afterWeekend} €</p>
+                        <p>Après remise: ${result.breakdown.afterDiscount} €</p>
+                        <p>Supplément vue mer: ${result.breakdown.seaViewExtra} €</p>
+                        <p>Petit-déjeuner: ${result.breakdown.breakfastCost} €</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<p>Erreur: ${result.error}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

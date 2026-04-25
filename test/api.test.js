@@ -1,26 +1,26 @@
-const request = require('supertest');
-const app = require('../index');
+const request = require("supertest");
+const app = require("../index");
 
-describe('SmartHotel API', () => {
-  test('GET / should return welcome message', async () => {
-    const response = await request(app).get('/');
+describe("SmartHotel API", () => {
+  test("GET / should return welcome message", async () => {
+    const response = await request(app).get("/");
     expect(response.status).toBe(200);
-    expect(response.text).toContain('SmartHotel');
+    expect(response.text).toContain("SmartHotel");
   });
 
-  test('POST /api/book-room should calculate price with valid data', async () => {
+  test("POST /api/book-room should calculate price with valid data", async () => {
     const response = await request(app)
-      .post('/api/book-room')
+      .post("/api/book-room")
       .send({
         basePrice: 100,
         nights: 2,
         guests: 2,
-        season: 'Basse',
+        season: "Basse",
         hasWeekend: false,
         seaView: false,
-        clientType: 'Standard'
+        clientType: "Standard"
       });
-    
+
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     // baseTotal: 200, breakfast: 60, grandTotal: 260
@@ -29,99 +29,99 @@ describe('SmartHotel API', () => {
     expect(response.body.breakdown.breakfastCost).toBe(60);
   });
 
-  test('should reject invalid basePrice', async () => {
+  test("should reject invalid basePrice", async () => {
     const response = await request(app)
-      .post('/api/book-room')
+      .post("/api/book-room")
       .send({
         basePrice: -50,
         nights: 1,
         guests: 1,
-        season: 'Basse',
+        season: "Basse",
         hasWeekend: false,
         seaView: false,
-        clientType: 'Standard'
+        clientType: "Standard"
       });
-    
+
     expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
-    expect(response.body.error).toContain('basePrice');
+    expect(response.body.error).toContain("basePrice");
   });
 
-  test('should reject non-integer nights', async () => {
+  test("should reject non-integer nights", async () => {
     const response = await request(app)
-      .post('/api/book-room')
+      .post("/api/book-room")
       .send({
         basePrice: 100,
         nights: 1.5,
         guests: 1,
-        season: 'Basse',
+        season: "Basse",
         hasWeekend: false,
         seaView: false,
-        clientType: 'Standard'
+        clientType: "Standard"
       });
-    
+
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain('nights');
+    expect(response.body.error).toContain("nights");
   });
 
-  test('should validate season value', async () => {
+  test("should validate season value", async () => {
     const response = await request(app)
-      .post('/api/book-room')
+      .post("/api/book-room")
       .send({
         basePrice: 100,
         nights: 1,
         guests: 1,
-        season: 'Invalid',
+        season: "Invalid",
         hasWeekend: false,
         seaView: false,
-        clientType: 'Standard'
+        clientType: "Standard"
       });
-    
+
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain('season');
+    expect(response.body.error).toContain("season");
   });
 
-  test('should validate clientType value', async () => {
+  test("should validate clientType value", async () => {
     const response = await request(app)
-      .post('/api/book-room')
+      .post("/api/book-room")
       .send({
         basePrice: 100,
         nights: 1,
         guests: 1,
-        season: 'Basse',
+        season: "Basse",
         hasWeekend: false,
         seaView: false,
-        clientType: 'Bronze'
+        clientType: "Bronze"
       });
-    
+
     expect(response.status).toBe(400);
-    expect(response.body.error).toContain('clientType');
+    expect(response.body.error).toContain("clientType");
   });
 
-  test('should handle missing required fields', async () => {
+  test("should handle missing required fields", async () => {
     const response = await request(app)
-      .post('/api/book-room')
+      .post("/api/book-room")
       .send({
         basePrice: 100
       });
-    
+
     expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
   });
 
-  test('should calculate price with VIP client (free breakfast)', async () => {
+  test("should calculate price with VIP client (free breakfast)", async () => {
     const response = await request(app)
-      .post('/api/book-room')
+      .post("/api/book-room")
       .send({
         basePrice: 100,
         nights: 3,
         guests: 2,
-        season: 'Haute',
+        season: "Haute",
         hasWeekend: true,
         seaView: true,
-        clientType: 'VIP'
+        clientType: "VIP"
       });
-    
+
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     // baseTotal: 100 * 1.5 * 3 = 450

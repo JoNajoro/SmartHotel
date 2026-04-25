@@ -1,58 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1777124074706" clover="3.2.0">
-  <project timestamp="1777124074707" name="All files">
-    <metrics statements="46" coveredstatements="38" conditionals="38" coveredconditionals="34" methods="4" coveredmethods="2" elements="88" coveredelements="74" complexity="0" loc="46" ncloc="46" packages="1" files="2" classes="2"/>
+<coverage generated="1777126624893" clover="3.2.0">
+  <project timestamp="1777126624893" name="All files">
+    <metrics statements="67" coveredstatements="62" conditionals="22" coveredconditionals="21" methods="16" coveredmethods="14" elements="105" coveredelements="97" complexity="0" loc="67" ncloc="67" packages="1" files="2" classes="2"/>
     <file name="index.js" path="D:\ENI\M2 ENI\Qualimetrie\Projet\index.js">
-      <metrics statements="33" coveredstatements="25" conditionals="28" coveredconditionals="24" methods="3" coveredmethods="1"/>
+      <metrics statements="53" coveredstatements="48" conditionals="22" coveredconditionals="21" methods="15" coveredmethods="13"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
       <line num="4" count="1" type="stmt"/>
       <line num="5" count="1" type="stmt"/>
-      <line num="6" count="1" type="stmt"/>
-      <line num="8" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="8" count="0" type="stmt"/>
       <line num="9" count="0" type="stmt"/>
-      <line num="10" count="0" type="stmt"/>
-      <line num="13" count="1" type="stmt"/>
-      <line num="14" count="7" type="stmt"/>
-      <line num="15" count="7" type="stmt"/>
-      <line num="18" count="7" type="cond" truecount="4" falsecount="0"/>
-      <line num="19" count="1" type="stmt"/>
-      <line num="21" count="6" type="cond" truecount="5" falsecount="0"/>
-      <line num="22" count="2" type="stmt"/>
-      <line num="24" count="4" type="cond" truecount="4" falsecount="1"/>
-      <line num="25" count="0" type="stmt"/>
-      <line num="28" count="4" type="cond" truecount="4" falsecount="0"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="13" count="21" type="cond" truecount="4" falsecount="0"/>
+      <line num="14" count="3" type="stmt"/>
+      <line num="16" count="18" type="cond" truecount="2" falsecount="0"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="19" count="17" type="stmt"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="23" count="7" type="cond" truecount="4" falsecount="0"/>
+      <line num="24" count="2" type="stmt"/>
+      <line num="26" count="5" type="stmt"/>
       <line num="29" count="1" type="stmt"/>
-      <line num="32" count="3" type="cond" truecount="1" falsecount="1"/>
-      <line num="33" count="0" type="stmt"/>
-      <line num="36" count="3" type="cond" truecount="1" falsecount="1"/>
-      <line num="37" count="0" type="stmt"/>
-      <line num="39" count="3" type="cond" truecount="4" falsecount="0"/>
-      <line num="40" count="1" type="stmt"/>
-      <line num="42" count="2" type="stmt"/>
-      <line num="43" count="2" type="stmt"/>
-      <line num="45" count="0" type="stmt"/>
-      <line num="46" count="0" type="stmt"/>
-      <line num="51" count="1" type="stmt"/>
-      <line num="54" count="1" type="cond" truecount="1" falsecount="1"/>
-      <line num="55" count="0" type="stmt"/>
+      <line num="30" count="7" type="cond" truecount="4" falsecount="0"/>
+      <line num="31" count="2" type="stmt"/>
+      <line num="33" count="5" type="stmt"/>
+      <line num="36" count="1" type="stmt"/>
+      <line num="37" count="14" type="cond" truecount="2" falsecount="0"/>
+      <line num="38" count="2" type="stmt"/>
+      <line num="40" count="12" type="stmt"/>
+      <line num="43" count="1" type="stmt"/>
+      <line num="44" count="7" type="stmt"/>
+      <line num="45" count="7" type="stmt"/>
+      <line num="46" count="7" type="stmt"/>
+      <line num="47" count="7" type="stmt"/>
+      <line num="48" count="7" type="stmt"/>
+      <line num="49" count="7" type="stmt"/>
+      <line num="50" count="7" type="stmt"/>
+      <line num="51" count="7" type="stmt"/>
+      <line num="54" count="7" type="stmt"/>
+      <line num="55" count="7" type="stmt"/>
+      <line num="56" count="49" type="stmt"/>
+      <line num="57" count="49" type="cond" truecount="2" falsecount="0"/>
+      <line num="59" count="7" type="stmt"/>
+      <line num="62" count="1" type="stmt"/>
+      <line num="63" count="7" type="stmt"/>
+      <line num="64" count="7" type="stmt"/>
+      <line num="66" count="7" type="cond" truecount="2" falsecount="0"/>
+      <line num="67" count="5" type="stmt"/>
+      <line num="70" count="2" type="stmt"/>
+      <line num="71" count="2" type="stmt"/>
+      <line num="72" count="2" type="stmt"/>
+      <line num="74" count="0" type="stmt"/>
+      <line num="75" count="0" type="stmt"/>
+      <line num="80" count="1" type="stmt"/>
+      <line num="83" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="84" count="0" type="stmt"/>
     </file>
     <file name="smarthotel.js" path="D:\ENI\M2 ENI\Qualimetrie\Projet\smarthotel.js">
-      <metrics statements="13" coveredstatements="13" conditionals="10" coveredconditionals="10" methods="1" coveredmethods="1"/>
-      <line num="2" count="2" type="stmt"/>
-      <line num="3" count="9" type="cond" truecount="2" falsecount="0"/>
-      <line num="4" count="9" type="cond" truecount="2" falsecount="0"/>
-      <line num="5" count="9" type="cond" truecount="2" falsecount="0"/>
-      <line num="6" count="9" type="cond" truecount="2" falsecount="0"/>
-      <line num="7" count="9" type="cond" truecount="2" falsecount="0"/>
+      <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <line num="1" count="2" type="stmt"/>
+      <line num="2" count="9" type="stmt"/>
+      <line num="4" count="9" type="stmt"/>
+      <line num="5" count="9" type="stmt"/>
+      <line num="6" count="9" type="stmt"/>
+      <line num="7" count="9" type="stmt"/>
       <line num="8" count="9" type="stmt"/>
       <line num="9" count="9" type="stmt"/>
       <line num="10" count="9" type="stmt"/>
       <line num="11" count="9" type="stmt"/>
       <line num="12" count="9" type="stmt"/>
       <line num="13" count="9" type="stmt"/>
-      <line num="19" count="2" type="stmt"/>
+      <line num="15" count="9" type="stmt"/>
+      <line num="21" count="2" type="stmt"/>
     </file>
   </project>
 </coverage>

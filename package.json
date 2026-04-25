@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "lint": "eslint . --format json --output-file eslint-report.json",
+    "lint": "eslint . --fix --format json --output-file eslint-report.json",
     "lint:fix": "eslint . --fix"
   },
   "keywords": [],

@@ -1,8 +1,16 @@
-const { calculatePrice } = require('../smarthotel');
+const { calculatePrice } = require("../smarthotel");
 
-describe('calculatePrice', () => {
-  test('should calculate price with base case', () => {
-    const result = calculatePrice(100, 1, 1, 'Basse', false, false, 'Standard');
+describe("calculatePrice", () => {
+  test("should calculate price with base case", () => {
+    const result = calculatePrice({
+      basePrice: 100,
+      nights: 1,
+      guests: 1,
+      season: "Basse",
+      hasWeekend: false,
+      seaView: false,
+      clientType: "Standard"
+    });
     expect(result.grandTotal).toBe(115); // 100 + 15 breakfast
     expect(result.breakdown.baseTotal).toBe(100);
     expect(result.breakdown.afterWeekend).toBe(100);
@@ -11,23 +19,47 @@ describe('calculatePrice', () => {
     expect(result.breakdown.breakfastCost).toBe(15);
   });
 
-  test('should apply season multiplier for Haute season', () => {
-    const result = calculatePrice(100, 1, 1, 'Haute', false, false, 'Standard');
+  test("should apply season multiplier for Haute season", () => {
+    const result = calculatePrice({
+      basePrice: 100,
+      nights: 1,
+      guests: 1,
+      season: "Haute",
+      hasWeekend: false,
+      seaView: false,
+      clientType: "Standard"
+    });
     expect(result.grandTotal).toBe(165); // 150 + 15 breakfast
     expect(result.breakdown.baseTotal).toBe(150);
     expect(result.breakdown.afterWeekend).toBe(150);
     expect(result.breakdown.afterDiscount).toBe(150);
   });
 
-  test('should apply weekend multiplier', () => {
-    const result = calculatePrice(100, 1, 1, 'Basse', true, false, 'Standard');
+  test("should apply weekend multiplier", () => {
+    const result = calculatePrice({
+      basePrice: 100,
+      nights: 1,
+      guests: 1,
+      season: "Basse",
+      hasWeekend: true,
+      seaView: false,
+      clientType: "Standard"
+    });
     expect(result.grandTotal).toBe(135); // 120 + 15 breakfast
     expect(result.breakdown.afterWeekend).toBe(120);
     expect(result.breakdown.afterDiscount).toBe(120);
   });
 
-  test('should apply long stay discount for nights > 7', () => {
-    const result = calculatePrice(100, 8, 1, 'Basse', false, false, 'Standard');
+  test("should apply long stay discount for nights > 7", () => {
+    const result = calculatePrice({
+      basePrice: 100,
+      nights: 8,
+      guests: 1,
+      season: "Basse",
+      hasWeekend: false,
+      seaView: false,
+      clientType: "Standard"
+    });
     // baseTotal: 100 * 8 = 800
     // afterWeekend: 800 (no weekend)
     // afterDiscount: 800 * 0.85 = 680
@@ -39,21 +71,45 @@ describe('calculatePrice', () => {
     expect(result.grandTotal).toBe(800);
   });
 
-  test('should add sea view extra', () => {
-    const result = calculatePrice(100, 2, 1, 'Basse', false, true, 'Standard');
+  test("should add sea view extra", () => {
+    const result = calculatePrice({
+      basePrice: 100,
+      nights: 2,
+      guests: 1,
+      season: "Basse",
+      hasWeekend: false,
+      seaView: true,
+      clientType: "Standard"
+    });
     expect(result.breakdown.seaViewExtra).toBe(60); // 30 * 2 nights
     expect(result.breakdown.breakfastCost).toBe(30); // 15 * 1 * 2
     expect(result.grandTotal).toBe(290); // 200 + 0 + 60 + 30
   });
 
-  test('should waive breakfast for VIP clients', () => {
-    const result = calculatePrice(100, 1, 1, 'Basse', false, false, 'VIP');
+  test("should waive breakfast for VIP clients", () => {
+    const result = calculatePrice({
+      basePrice: 100,
+      nights: 1,
+      guests: 1,
+      season: "Basse",
+      hasWeekend: false,
+      seaView: false,
+      clientType: "VIP"
+    });
     expect(result.breakdown.breakfastCost).toBe(0);
     expect(result.grandTotal).toBe(100);
   });
 
-  test('should apply all modifiers correctly', () => {
-    const result = calculatePrice(200, 10, 2, 'Haute', true, true, 'Standard');
+  test("should apply all modifiers correctly", () => {
+    const result = calculatePrice({
+      basePrice: 200,
+      nights: 10,
+      guests: 2,
+      season: "Haute",
+      hasWeekend: true,
+      seaView: true,
+      clientType: "Standard"
+    });
     // Season: 200 * 1.5 = 300 per night
     // baseTotal: 300 * 10 = 3000
     // afterWeekend: 3000 * 1.2 = 3600

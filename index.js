@@ -47,4 +47,10 @@ app.post('/api/book-room', (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('SmartHotel API running on http://localhost:3000'));
+// Export app for testing
+module.exports = app;
+
+// Only start server if this file is run directly (not imported)
+if (require.main === module) {
+  app.listen(3000, () => console.log('SmartHotel API running on http://localhost:3000'));
+}

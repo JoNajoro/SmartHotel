@@ -31,12 +31,17 @@ module.exports = [
       "no-unused-vars": ["error", { "args": "none", "caughtErrors": "none" }],
       "prefer-const": "error",
       "no-var": "error",
-      "semi": ["error", "always"],
-      "quotes": ["error", "double"],
+      "semi": "off",
+      "quotes": "off",
+      "@stylistic/semi": ["error", "always"],
+      "@stylistic/quotes": ["error", "double"],
       "no-unused-expressions": "error",
       "no-implicit-globals": "error",
       "no-redeclare": "error",
       "no-shadow": "error",
+    },
+    plugins: {
+      "@stylistic": require("@stylistic/eslint-plugin")
     },
   },
   {

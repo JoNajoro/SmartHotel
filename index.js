@@ -1,12 +1,13 @@
 const express = require("express");
 const { calculatePrice } = require("./smarthotel");
+const { authenticate, generateToken, authMiddleware } = require("./auth");
 const app = express();
 app.use(express.json());
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   console.log("GET / called");
-  res.send("<h1>SmartHotel Interface</h1><p>Interface en développement...</p>");
+  res.send("<h1>SmartHotel Interface</h1><p>Interface en developpement...</p>");
 });
 
 const validateNumber = (value, fieldName) => {
@@ -59,7 +60,23 @@ const validateBookingInput = (body) => {
   return errors;
 };
 
-app.post("/api/book-room", (req, res) => {
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, error: "Username and password required" });
+  }
+
+  const user = authenticate(username, password);
+  if (!user) {
+    return res.status(401).json({ success: false, error: "Invalid credentials" });
+  }
+
+  const token = generateToken(user);
+  res.json({ success: true, token, user: { id: user.id, username: user.username, role: user.role } });
+});
+
+app.post("/api/book-room", authMiddleware, (req, res) => {
   try {
     const errors = validateBookingInput(req.body);
 
@@ -71,7 +88,7 @@ app.post("/api/book-room", (req, res) => {
     const result = calculatePrice({ basePrice, nights, guests, season, hasWeekend, seaView, clientType });
     res.json({ success: true, ...result });
   } catch (error) {
-    console.error("Error processing request:", error);
+    console.error("Error processing request:", error.message);
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });

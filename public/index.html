@@ -17,8 +17,9 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        h1 {
+        h1, h2 {
             color: #333;
             text-align: center;
         }
@@ -54,6 +55,7 @@
             cursor: pointer;
             width: 100%;
             font-size: 16px;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #45a049;
@@ -83,11 +85,55 @@
         .breakdown p {
             margin: 5px 0;
         }
+        .token-display {
+            word-break: break-all;
+            font-size: 0.85em;
+            color: #666;
+            background: #f0f0f0;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        .section-divider {
+            border-top: 2px solid #eee;
+            margin: 20px 0;
+        }
+        .user-info {
+            text-align: center;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .logout-btn {
+            background-color: #f44336;
+        }
+        .logout-btn:hover {
+            background-color: #da190b;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>SmartHotel - Calculateur de Prix</h1>
+        <h1>SmartHotel - Connexion</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+        <div id="loginResult" class="result"></div>
+    </div>
+
+    <div class="container" id="bookingContainer" style="display: none;">
+        <h2>Calculateur de Prix</h2>
+        <p id="userInfo" class="user-info"></p>
+        <button id="logoutBtn" class="logout-btn">Se deconnecter</button>
+        <div class="section-divider"></div>
         <form id="bookingForm">
             <div class="form-group">
                 <label for="basePrice">Prix de base par nuit (€):</label>
@@ -98,7 +144,7 @@
                 <input type="number" id="nights" name="nights" min="1" required>
             </div>
             <div class="form-group">
-                <label for="guests">Nombre d'invités:</label>
+                <label for="guests">Nombre d'invites:</label>
                 <input type="number" id="guests" name="guests" min="1" required>
             </div>
             <div class="form-group">
@@ -133,14 +179,80 @@
     </div>
 
     <script>
-        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+        const loginForm = document.getElementById('loginForm');
+        const bookingForm = document.getElementById('bookingForm');
+        const loginResult = document.getElementById('loginResult');
+        const resultDiv = document.getElementById('result');
+        const bookingContainer = document.getElementById('bookingContainer');
+        const userInfo = document.getElementById('userInfo');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        let authToken = localStorage.getItem('authToken');
+        let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+
+        function updateUI() {
+            if (authToken && currentUser) {
+                bookingContainer.style.display = 'block';
+                userInfo.textContent = `Connecte en tant que: ${currentUser.username} (${currentUser.role})`;
+                loginResult.style.display = 'none';
+            } else {
+                bookingContainer.style.display = 'none';
+            }
+        }
+
+        function getAuthHeaders() {
+            return authToken ? { 'Authorization': 'Bearer ' + authToken } : {};
+        }
+
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                loginResult.style.display = 'block';
+                loginResult.className = 'result ' + (result.success ? 'success' : 'error');
+
+                if (result.success) {
+                    authToken = result.token;
+                    currentUser = result.user;
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    loginResult.innerHTML = `<p>Connexion reussie!</p><div class="token-display">Token: ${authToken.substring(0, 50)}...</div>`;
+                    updateUI();
+                } else {
+                    loginResult.innerHTML = `<p>Erreur: ${result.error}</p>`;
+                }
+            } catch (error) {
+                loginResult.style.display = 'block';
+                loginResult.className = 'result error';
+                loginResult.innerHTML = `<p>Erreur de connexion au serveur</p>`;
+            }
+        });
+
+        bookingForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!authToken) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<p>Veuillez vous connecter pour effectuer une reservation.</p>';
+                return;
+            }
 
             const formData = new FormData(e.target);
             const data = {
                 basePrice: parseFloat(formData.get('basePrice')),
-                nights: parseInt(formData.get('nights')),
-                guests: parseInt(formData.get('guests')),
+                nights: parseInt(formData.get('nights'), 10),
+                guests: parseInt(formData.get('guests'), 10),
                 season: formData.get('season'),
                 hasWeekend: formData.has('hasWeekend'),
                 seaView: formData.has('seaView'),
@@ -151,7 +263,8 @@
                 const response = await fetch('/api/book-room', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        ...getAuthHeaders()
                     },
                     body: JSON.stringify(data)
                 });
@@ -159,24 +272,34 @@
                 const result = await response.json();
                 displayResult(result);
             } catch (error) {
-                displayResult({ success: false, error: 'Erreur de connexion au serveur' });
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<p>Erreur de connexion au serveur</p>';
             }
         });
 
-        function displayResult(result) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            authToken = null;
+            currentUser = null;
+            resultDiv.style.display = 'none';
+            loginResult.style.display = 'none';
+            updateUI();
+        });
 
+        function displayResult(result) {
+            resultDiv.style.display = 'block';
             if (result.success) {
                 resultDiv.className = 'result success';
                 resultDiv.innerHTML = `
                     <h3>Prix total: ${result.grandTotal} €</h3>
                     <div class="breakdown">
                         <p>Prix de base: ${result.breakdown.baseTotal} €</p>
-                        <p>Après week-end: ${result.breakdown.afterWeekend} €</p>
-                        <p>Après remise: ${result.breakdown.afterDiscount} €</p>
-                        <p>Supplément vue mer: ${result.breakdown.seaViewExtra} €</p>
-                        <p>Petit-déjeuner: ${result.breakdown.breakfastCost} €</p>
+                        <p>Apres week-end: ${result.breakdown.afterWeekend} €</p>
+                        <p>Apres remise: ${result.breakdown.afterDiscount} €</p>
+                        <p>Supplement vue mer: ${result.breakdown.seaViewExtra} €</p>
+                        <p>Petit-dejeuner: ${result.breakdown.breakfastCost} €</p>
                     </div>
                 `;
             } else {
@@ -184,6 +307,8 @@
                 resultDiv.innerHTML = `<p>Erreur: ${result.error}</p>`;
             }
         }
+
+        updateUI();
     </script>
 </body>
 </html>
